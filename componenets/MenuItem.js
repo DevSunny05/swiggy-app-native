@@ -2,12 +2,24 @@ import {  ImageBackground, Pressable, StyleSheet, Text, View } from 'react-nativ
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const MenuItem = ({item}) => {
+    const navigation=useNavigation()
   return (
     <View style={styles.container}>
-      <Pressable style={{flexDirection:'row',}}>
+      <Pressable onPress={()=>navigation.navigate('Menu',{
+        id:item.id,
+        name:item.name,
+        image:item.image,
+        adress:item.adress,
+        rating:item.rating,
+        time:item.time,
+        cost_for_two:item.cost_for_two,
+        cuisines:item.cuisines,
+        menu:item.menu
+      })} style={{flexDirection:'row',}}>
         <View style={styles.imageContainer}>
             <ImageBackground imageStyle={{borderRadius:6}} style={styles.image} source={{uri:item.image}}>
                 <AntDesign style={styles.heartIcon} name="hearto" size={24} color="white" />
