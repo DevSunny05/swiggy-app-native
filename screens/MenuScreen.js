@@ -1,20 +1,41 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {   Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Ionicons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
+import FoodItem from '../componenets/FoodItem';
+import { MaterialIcons } from '@expo/vector-icons';
+import Modal from 'react-native-modal'
+import { useSelector } from 'react-redux';
+
 
 
 
 const MenuScreen = () => {
+    const cart=useSelector((state)=>state.cart.cart)
     const navigation=useNavigation()
     const route=useRoute()
-    const {id,name,rating,time,cuisines,adress}=route.params
+    const {id,name,rating,time,cuisines,adress,menu}=route.params
+
+    const[menuList,setMenuList]=useState([])
+    const [modalVisible,setModalVisible]=useState(false)
+
+    useEffect(()=>{
+        const fetchMenu=()=>{
+            setMenuList(menu)
+        }
+        fetchMenu()
+    },[])
+
+    const toggleModal=()=>{
+        setModalVisible(!modalVisible)
+    }
   return (
-    <SafeAreaView style={{marginTop:40}}>
+    <>
+    <ScrollView style={{marginTop:40}}>
       <View style={styles.blueBackground}>
         <View style={styles.upperContainer}>
             <Ionicons onPress={()=>navigation.goBack()} name="arrow-back" size={24} color="black" />
@@ -60,7 +81,35 @@ const MenuScreen = () => {
             </View>
         </View>
       </View>
-    </SafeAreaView>
+
+      <Text style={styles.menuText}>Menu</Text>
+      <Text style={styles.divider}></Text>
+
+      {
+        menu.map((item,index)=>(
+            <FoodItem item={item} key={index}/>
+        ))
+      }
+    </ScrollView>
+    <Pressable onPress={()=>toggleModal()} style={styles.menuContainer}>
+        <MaterialIcons style={{textAlign:'center'}} name="menu-book" size={24} color="white" />
+        <Text style={styles.menutext}>MENU</Text>
+    </Pressable>
+
+    <Modal isVisible={modalVisible} onBackdropPress={toggleModal}>
+        <View style={styles.modalContainer}>
+            {
+                menuList.map((item,index)=>(
+                    <View style={styles.modalView} key={index}>
+                            <Text style={styles.modalText}>{item.name}</Text>
+                            <Text style={styles.modalText}>{item.items.length}</Text>
+                    </View>
+                ))
+            }
+           
+        </View>
+    </Modal>
+    </>
   )
 }
 
@@ -159,6 +208,58 @@ const styles = StyleSheet.create({
         marginLeft:10,
         color:'gray',
         fontSize:16
+    },
+    menuText:{
+        textAlign:'center',
+        fontSize:17,
+        fontWeight:'500',
+        marginTop:10
+    },
+    divider:{
+        borderColor:'gray',
+        borderWidth:0.6,
+        height:1,
+        marginTop:10
+    },
+    menuContainer:{
+        width:60,
+        height:60,
+        borderRadius:30,
+        justifyContent:'center',
+        backgroundColor:'black',
+        marginLeft:'auto',
+        position:'absolute',
+        bottom:35,
+        right:25,
+        alignContent:'center'
+    },
+    menutext:{
+        textAlign:'center',
+        color:'white',
+        fontWeight:'500',
+        fontSize:12
+    },
+    modalContainer:{
+        height:190,
+        width:250,
+        backgroundColor:'black',
+        position:'absolute',
+        bottom:35,
+        right:10,
+        borderRadius:7
+
+    },
+    modalView:{
+        padding:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between'
+    },
+    modalText:{
+        color:'#D0D0D0',
+        fontWeight:'600',
+        fontSize:19
+
     }
 
 })
